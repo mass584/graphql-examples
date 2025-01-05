@@ -1,0 +1,81 @@
+"""著者の情報を表す型"""
+type Author {
+  """著者が書いた本のリスト"""
+  books: [Book!]!
+
+  """著者のメールアドレス"""
+  email: String!
+
+  """著者のID"""
+  id: ID!
+
+  """著者の名前"""
+  name: String!
+}
+
+"""本の情報を表す型"""
+type Book {
+  """著者名"""
+  author: String!
+
+  """著者のID"""
+  authorId: ID!
+
+  """本の著者の詳細情報"""
+  bookAuthor: Author
+
+  """本のID"""
+  id: ID!
+
+  """本の価格"""
+  price: Float!
+
+  """本のタイトル"""
+  title: String!
+}
+
+type Mutation {
+  """新しい著者を作成"""
+  createAuthor(
+    """著者のメールアドレス"""
+    email: String!
+
+    """著者の名前"""
+    name: String!
+  ): Author!
+
+  """新しい本を作成"""
+  createBook(
+    """著者名"""
+    author: String!
+
+    """著者のID"""
+    authorId: String!
+
+    """本の価格"""
+    price: Float!
+
+    """本のタイトル"""
+    title: String!
+  ): Book!
+}
+
+type Query {
+  """指定したIDの著者を取得"""
+  author(
+    """著者のID"""
+    id: String!
+  ): Author
+
+  """全ての著者を取得"""
+  authors: [Author!]!
+
+  """指定したIDの本を取得"""
+  book(
+    """本のID"""
+    id: String!
+  ): Book
+
+  """全ての本を取得"""
+  books: [Book!]!
+}
