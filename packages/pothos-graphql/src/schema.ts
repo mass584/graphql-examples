@@ -38,103 +38,111 @@ builder.objectType("Book", {
   }),
 });
 
-// Query型の定義
-builder.queryType({
-  fields: (t) => ({
-    authors: t.field({
-      type: ["Author"],
-      description: "全ての著者を取得",
-      resolve: (_, __, context) => context.authors,
-    }),
-    author: t.field({
-      type: "Author",
-      description: "指定したIDの著者を取得",
-      nullable: true,
-      args: {
-        id: t.arg.string({ required: true, description: "著者のID" }),
-      },
-      resolve: (_, { id }, context) => {
-        return context.authors.find((author) => author.id === id);
-      },
-    }),
-    books: t.field({
-      type: ["Book"],
-      description: "全ての本を取得",
-      resolve: (_, __, context) => context.books,
-    }),
-    book: t.field({
-      type: "Book",
-      description: "指定したIDの本を取得",
-      nullable: true,
-      args: {
-        id: t.arg.string({ required: true, description: "本のID" }),
-      },
-      resolve: (_, { id }, context) => {
-        return context.books.find((book) => book.id === id);
-      },
-    }),
-  }),
-});
+// Query fieldsの定義
+builder.queryField("authors", (t) =>
+  t.field({
+    type: ["Author"],
+    description: "全ての著者を取得",
+    resolve: (_, __, context) => context.authors,
+  })
+);
 
-// Mutation型の定義
-builder.mutationType({
-  fields: (t) => ({
-    createAuthor: t.field({
-      type: "Author",
-      description: "新しい著者を作成",
-      args: {
-        name: t.arg.string({
-          required: true,
-          description: "著者の名前",
-          validate: { minLength: 2 },
-        }),
-        email: t.arg.string({
-          required: true,
-          description: "著者のメールアドレス",
-          validate: { email: true },
-        }),
-      },
-      resolve: (_, { name, email }, context) => {
-        const author = { id: uuidv4(), name, email };
-        context.authors.push(author);
-        return author;
-      },
-    }),
-    createBook: t.field({
-      type: "Book",
-      description: "新しい本を作成",
-      args: {
-        title: t.arg.string({
-          required: true,
-          description: "本のタイトル",
-          validate: { minLength: 3 },
-        }),
-        author: t.arg.string({
-          required: true,
-          description: "著者名",
-        }),
-        price: t.arg.float({
-          required: true,
-          description: "本の価格",
-          validate: { min: 0 },
-        }),
-        authorId: t.arg.string({
-          required: true,
-          description: "著者のID",
-        }),
-      },
-      resolve: (_, { title, author, price, authorId }, context) => {
-        const existingAuthor = context.authors.find((a) => a.id === authorId);
-        if (!existingAuthor) {
-          throw new Error(`Author with ID ${authorId} not found`);
-        }
+builder.queryField("author", (t) =>
+  t.field({
+    type: "Author",
+    description: "指定したIDの著者を取得",
+    nullable: true,
+    args: {
+      id: t.arg.string({ required: true, description: "著者のID" }),
+    },
+    resolve: (_, { id }, context) => {
+      return context.authors.find((author) => author.id === id);
+    },
+  })
+);
 
-        const book = { id: uuidv4(), title, author, price, authorId };
-        context.books.push(book);
-        return book;
-      },
-    }),
-  }),
-});
+builder.queryField("books", (t) =>
+  t.field({
+    type: ["Book"],
+    description: "全ての本を取得",
+    resolve: (_, __, context) => context.books,
+  })
+);
+
+builder.queryField("book", (t) =>
+  t.field({
+    type: "Book",
+    description: "指定したIDの本を取得",
+    nullable: true,
+    args: {
+      id: t.arg.string({ required: true, description: "本のID" }),
+    },
+    resolve: (_, { id }, context) => {
+      return context.books.find((book) => book.id === id);
+    },
+  })
+);
+
+// Mutation fieldsの定義
+builder.mutationField("createAuthor", (t) =>
+  t.field({
+    type: "Author",
+    description: "新しい著者を作成",
+    args: {
+      name: t.arg.string({
+        required: true,
+        description: "著者の名前",
+        validate: { minLength: 2 },
+      }),
+      email: t.arg.string({
+        required: true,
+        description: "著者のメールアドレス",
+        validate: { email: true },
+      }),
+    },
+    resolve: (_, { name, email }, context) => {
+      const author = { id: uuidv4(), name, email };
+      context.authors.push(author);
+      return author;
+    },
+  })
+);
+
+builder.mutationField("createBook", (t) =>
+  t.field({
+    type: "Book",
+    description: "新しい本を作成",
+    args: {
+      title: t.arg.string({
+        required: true,
+        description: "本のタイトル",
+        validate: { minLength: 3 },
+      }),
+      author: t.arg.string({
+        required: true,
+        description: "著者名",
+      }),
+      price: t.arg.float({
+        required: true,
+        description: "本の価格",
+        validate: { min: 0 },
+      }),
+      authorId: t.arg.string({
+        required: true,
+        description: "著者のID",
+      }),
+    },
+    resolve: (_, { title, author, price, authorId }, context) => {
+      const existingAuthor = context.authors.find((a) => a.id === authorId);
+      if (!existingAuthor) {
+        throw new Error(`Author with ID ${authorId} not found`);
+      }
+
+      const book = { id: uuidv4(), title, author, price, authorId };
+      context.books.push(book);
+      return book;
+    },
+  })
+);
 
 export const schema = builder.toSchema();
