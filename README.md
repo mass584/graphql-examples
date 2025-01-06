@@ -1,13 +1,14 @@
 # GraphQL Server Examples
 
-このリポジトリには、2つの異なるアプローチでGraphQLサーバーを実装したサンプルが含まれています。
+このリポジトリには、3つの異なるアプローチでGraphQLサーバーを実装したサンプルが含まれています。
 
 ## プロジェクト構成
 
 ```
 packages/
-  ├── nestjs-graphql/    # NestJS + Apollo Serverの実装
-  └── pothos-graphql/    # Pothos + GraphQL Yogaの実装
+  ├── nestjs-graphql/       # NestJS + Apollo Serverの実装
+  ├── pothos-graphql/       # Pothos + GraphQL Yogaの実装
+  └── schema-first-graphql/ # Apollo Serverの実装
 ```
 
 ## 機能
@@ -40,18 +41,29 @@ npm run pothos
 open http://localhost:4000/graphql
 ```
 
+### schema-first + Apollo Server
+
+```bash
+# 開発サーバーの起動
+npm run pothos
+
+# GraphQLプレイグラウンドにアクセス
+open http://localhost:4000/graphql
+```
+
 ## 実装の違い
 
 ### NestJS + Apollo Server
 
-- デコレータベースのCode-Firstアプローチ
-- NestJSのDI（依存性注入）システムを活用
-- クラスベースの実装
+- スキーマの定義はデコレータベースのCode-Firstアプローチ
 - スキーマは自動生成
+- NestJSのDIシステムを活用
 
 ### Pothos + GraphQL Yoga
 
-- ビルダーパターンを使用したCode-Firstアプローチ
-- より軽量な実装
-- 関数ベースの実装
-- 型安全なスキーマ定義
+- スキーマの定義はSchemaBuilderを使用したCode-Firstアプローチ
+- スキーマは自動生成
+
+### schema-first + Apollo Server
+
+- スキーマの定義は手動

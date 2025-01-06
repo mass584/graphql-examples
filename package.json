@@ -7,6 +7,7 @@
   ],
   "scripts": {
     "nestjs": "npm run start:dev -w packages/nestjs-graphql",
-    "pothos": "npm run start:dev -w packages/pothos-graphql"
+    "pothos": "npm run start:dev -w packages/pothos-graphql",
+    "schema-first": "npm run dev -w packages/schema-first-graphql"
   }
 } 
